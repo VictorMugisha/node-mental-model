@@ -34,7 +34,7 @@ const server = http.createServer(async (req, res) => {
     async function writeFile(body) {
       res.setHeader("Content-Type", "application/json");
       try {
-        await fs.writeFile("output.txt", body);
+        await fs.appendFile("output.txt", `\n${body}`);
         res.statusCode = 201;
         res.write(JSON.stringify({ message: "File written to.." }));
       } catch (error) {
