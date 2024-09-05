@@ -2,9 +2,9 @@ const fs = require("fs").promises;
 const http = require("http");
 
 const server = http.createServer(async (req, res) => {
-  const { method, url } = req;
+  const { method } = req;
 
-  if (method === "GET" && url === "/") {
+  if (method === "GET") {
     async function readFile() {
       try {
         const data = await fs.readFile("input.txt", "utf8");
@@ -20,8 +20,31 @@ const server = http.createServer(async (req, res) => {
       }
     }
     readFile();
+  } else if (method === "POST") {
+    // Getting body from the request
+    let body = '';
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+
+    req.on("end", () => {
+      writeFile(body);
+    });
+
+    async function writeFile(body) {
+      res.setHeader("Content-Type", "application/json");
+      try {
+        await fs.writeFile("output.txt", body);
+        res.statusCode = 201;
+        res.write(JSON.stringify({ message: "File written to.." }));
+      } catch (error) {
+        res.statusCode = 500;
+        res.write(JSON.stringify({ message: "Failed to write file!" }));
+      } finally {
+        res.end();
+      }
+    }
   }
-  
 });
 
 server.listen(3000, function () {
