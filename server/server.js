@@ -3,7 +3,19 @@ const { readFile } = require("./controllers/readFile");
 const { writeFile } = require("./controllers/writeFile");
 
 const server = http.createServer(async (req, res) => {
+  // setting CORS headers 
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  
   const { method } = req;
+
+  // Handle OPTIONS method
+  if (method === "OPTIONS") {
+    res.writeHead(204);
+    res.end();
+    return;
+  }
 
   /**
    * @swagger
