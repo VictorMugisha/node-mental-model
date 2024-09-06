@@ -1,6 +1,6 @@
-const fs = require("fs").pormises;
+const fs = require("fs").promises;
 
-async function readFile(req, res) {
+async function readFile(res) {
   try {
     const data = await fs.readFile("input.txt", "utf8");
     res.writeHead(200, { "Content-Type": "text/plain" });

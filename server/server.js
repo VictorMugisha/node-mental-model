@@ -6,7 +6,7 @@ const server = http.createServer(async (req, res) => {
   const { method } = req;
 
   if (method === "GET") {
-    readFile(req, res);
+    readFile(res);
   } else if (method === "POST") {
     // Getting body from the request
     let body = "";
@@ -15,7 +15,7 @@ const server = http.createServer(async (req, res) => {
     });
 
     req.on("end", () => {
-      writeFile(body, req, res);
+      writeFile(body, res);
     });
   }
 });

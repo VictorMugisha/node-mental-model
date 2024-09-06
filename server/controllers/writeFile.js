@@ -1,6 +1,6 @@
 const fs = require("fs").promises;
 
-async function writeFile(body, req, res) {
+async function writeFile(body, res) {
   res.setHeader("Content-Type", "application/json");
   try {
     await fs.appendFile("output.txt", `\n${body}`);
