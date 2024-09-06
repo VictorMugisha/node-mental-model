@@ -1,49 +1,22 @@
-const fs = require("fs").promises;
 const http = require("http");
+const { readFile } = require("./controllers/readFile");
+const { writeFile } = require("./controllers/writeFile");
 
 const server = http.createServer(async (req, res) => {
   const { method } = req;
 
   if (method === "GET") {
-    async function readFile() {
-      try {
-        const data = await fs.readFile("input.txt", "utf8");
-        res.writeHead(200, { "Content-Type": "text/plain" });
-        res.write(data);
-        res.end();
-      } catch (error) {
-        res.writeHead(500, { "Content-Type": "application/json" });
-        res.write(
-          JSON.stringify({ message: "Error happened during reading file!" })
-        );
-        res.end();
-      }
-    }
-    readFile();
+    readFile(req, res);
   } else if (method === "POST") {
     // Getting body from the request
-    let body = '';
+    let body = "";
     req.on("data", (chunk) => {
       body += chunk;
     });
 
     req.on("end", () => {
-      writeFile(body);
+      writeFile(body, req, res);
     });
-
-    async function writeFile(body) {
-      res.setHeader("Content-Type", "application/json");
-      try {
-        await fs.appendFile("output.txt", `\n${body}`);
-        res.statusCode = 201;
-        res.write(JSON.stringify({ message: "File written to.." }));
-      } catch (error) {
-        res.statusCode = 500;
-        res.write(JSON.stringify({ message: "Failed to write file!" }));
-      } finally {
-        res.end();
-      }
-    }
   }
 });
 
